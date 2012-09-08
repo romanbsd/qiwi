@@ -65,7 +65,7 @@ module Qiwi
     end
 
     class CreateBill < Base
-      attributes :login, :password, :user, :amount, :comment, :txn, :lifetime
+      attributes :login, :password, :user, :amount, :comment, :txn, :lifetime, :alarm, :create
 
       validates_presence_of :user, :amount, :txn
 

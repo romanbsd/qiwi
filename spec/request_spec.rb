@@ -11,7 +11,7 @@ describe Qiwi::Request do
     end
 
     it "has all attributes" do
-      Qiwi::Request::CreateBill.attributes.should eq([:login, :password, :user, :amount, :comment, :txn, :lifetime])
+      Qiwi::Request::CreateBill.attributes.should eq([:login, :password, :user, :amount, :comment, :txn, :lifetime, :alarm, :create])
     end
 
   end
