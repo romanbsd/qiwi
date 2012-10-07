@@ -46,7 +46,8 @@ module Qiwi
         xml['tns'].send(method) do
           self.class.attributes.each do |attr|
             # Underscore, so 'comment' is used as a parameter
-            xml.send("#{attr}_", send(attr))
+            # some ugly way to remove the namespace
+            xml.send("#{attr}_", send(attr)).instance_variable_get(:@node).namespace = nil
           end
         end
       end
