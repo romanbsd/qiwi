@@ -9,7 +9,7 @@ module Qiwi
 
   class Client
     ENDPOINT = 'https://ishop.qiwi.ru/services/ishop'.freeze
-    HEADERS = {'Content-Type' => 'text/xml; charset=utf-8'}.freeze
+    HEADERS = {'Content-Type' => 'application/soap+xml'}.freeze
 
     attr_reader :login, :password, :endpoint
     def initialize(login = nil, password = nil, endpoint = nil)

@@ -27,7 +27,6 @@ module Qiwi
         result = handle_soap_body(body)
         body = <<-EOF
 <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:cli="http://client.ishop.mw.ru/">
-   <soap:Header/>
    <soap:Body>
       <cli:updateBillResponse>
          <updateBillResult>#{result}</updateBillResult>
@@ -36,7 +35,7 @@ module Qiwi
 </soap:Envelope>
       EOF
       end
-      headers = {'Content-Type' => 'text/xml; charset=utf-8', 'Cache-Control' => 'no-cache'}
+      headers = {'Content-Type' => 'application/soap+xml', 'Cache-Control' => 'no-cache'}
       [200, headers, [body]]
     end
 
