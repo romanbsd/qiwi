@@ -11,8 +11,8 @@ describe Qiwi::Client do
 
     it "sends login and password" do
       blk = lambda do |req|
-        req.body.should match(%r{<tns:login>\w+</tns:login>})
-        req.body.should match(%r{<tns:password>\w+</tns:password>})
+        req.body.should match(%r{<login>\w+</login>})
+        req.body.should match(%r{<password>\w+</password>})
       end
       stub_request(:post, "http://localhost:8088/mock").with(&blk).
         to_return(:status => 200, :body => '')
