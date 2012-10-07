@@ -17,6 +17,35 @@
             <xs:element name="updateBillResult" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
+    <xs:element name="updateBillExt" type="tns:updateBillExt"/>
+    <xs:element name="updateBillExtResponse" type="tns:updateBillExtResponse"/>
+
+    <xs:complexType name="Param">
+        <xs:sequence>
+            <xs:element name="name" nillable="false" type="xsd:string"/>
+            <xs:element name="value" nillable="false" type="xsd:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfParams">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:Param"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="updateBillExt">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="login" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+            <xs:element minOccurs="0" name="txn" type="xs:string"/>
+            <xs:element name="status" type="xs:int"/>
+	    <xs:element name="params" nillable="false" type="tns:ArrayOfParams"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="updateBillExtResponse">
+        <xs:sequence>
+            <xs:element name="updateBillExtResult" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>
   </wsdl:types>
   <wsdl:message name="updateBillResponse">
@@ -27,6 +56,14 @@
     <wsdl:part name="parameters" element="tns:updateBill">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="updateBillExtResponse">
+    <wsdl:part name="parameters" element="tns:updateBillExtResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateBillExt">
+    <wsdl:part name="parameters" element="tns:updateBillExt">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:portType name="IShopClientWS">
     <wsdl:operation name="updateBill">
       <wsdl:input name="updateBill" message="tns:updateBill">
@@ -34,15 +71,30 @@
       <wsdl:output name="updateBillResponse" message="tns:updateBillResponse">
     </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="updateBillExt">
+      <wsdl:input name="updateBillExt" message="tns:updateBillExt">
+    </wsdl:input>
+      <wsdl:output name="updateBillExtResponse" message="tns:updateBillExtResponse">
+    </wsdl:output>
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="IShopClientWSServiceSoapBinding" type="tns:IShopClientWS">
-    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <soap12:binding style="document" transport="http://www.w3.org/2003/05/soap/bindings/HTTP/"/>
     <wsdl:operation name="updateBill">
       <soap12:operation soapAction="" style="document"/>
       <wsdl:input name="updateBill">
         <soap12:body use="literal"/>
       </wsdl:input>
       <wsdl:output name="updateBillResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateBillExt">
+      <soap12:operation soapAction="" style="document"/>
+      <wsdl:input name="updateBillExt">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateBillExtResponse">
         <soap12:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
