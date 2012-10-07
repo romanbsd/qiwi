@@ -58,14 +58,19 @@ describe Qiwi::Client do
   context "Errors" do
     it "handles SOAP errors" do
       body = <<-EOF
-      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-        <soapenv:Body>
-          <soapenv:Fault>
-            <faultcode>Server</faultcode>
-            <faultstring>Some error has occurred</faultstring>
-          </soapenv:Fault>
-        </soapenv:Body>
-      </soapenv:Envelope>
+      <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+        <soap:Body>
+          <soap:Fault>
+            <soap:Code>
+              <soap:Value>soap:Sender</soap:Value>
+            </soap:Code>
+            <soap:Reason>
+              <soap:Text xml:lang="en">Unmarshalling Error: unexpected element (uri:"http://server.ishop.mw.ru/", local:"login"). Expected elements are &lt;{}amount>,&lt;{}alarm>,&lt;{}lifetime>,&lt;{}txn>,&lt;{}login>,&lt;{}comment>,&lt;{}create>,&lt;{}user>,&lt;{}password>
+              </soap:Text>
+            </soap:Reason>
+          </soap:Fault>
+        </soap:Body>
+      </soap:Envelope>
       EOF
       stub_request(:post, "http://localhost:8088/mock").
         to_return(:status => 500, :body => body)

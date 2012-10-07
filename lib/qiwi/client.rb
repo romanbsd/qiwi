@@ -56,16 +56,17 @@ module Qiwi
     def handle_error(response)
       el = nil
       begin
-        xml = Nokogiri::XML(response.body)
-        xpath = '/soapenv:Envelope/soapenv:Body/soapenv:Fault'
-        el = xml.xpath(xpath)
+        xml = Nokogiri::XML(response.body).remove_namespaces!
+        xpath = '/Envelope/Body/Fault'
+        el = xml.at(xpath)
       rescue
-        # If it's not an XML response
+        # If it's an invalid XML response
         raise ServerError.new(response)
       end
 
-      code = el.at('faultcode').text
-      string = el.at('faultstring').text
+      raise ServerError.new(response) unless el
+      code = el.xpath('Code/Value').text
+      string = el.xpath('Reason/Text').text
       raise SOAPError.new(code, string)
     end
 
