@@ -7,13 +7,17 @@ module Qiwi
     class Base
       include ActiveModel::Validations
 
-      validates_presence_of :login, :password
+      def self.inherited(klass)
+        klass.attributes :login, :password
+        klass.validates_presence_of :login, :password
+      end
 
       def self.attributes(*attrs)
         if attrs.empty?
           @_attributes
         else
-          @_attributes = attrs
+          @_attributes ||= []
+          @_attributes += attrs
           attr_accessor(*attrs)
         end
       end
@@ -66,10 +70,9 @@ module Qiwi
     end
 
     class CreateBill < Base
-      attributes :login, :password, :user, :amount, :comment, :txn, :lifetime, :alarm, :create
+      attributes :user, :amount, :comment, :txn, :lifetime, :alarm, :create
 
       validates_presence_of :user, :amount, :txn
-
       validates_numericality_of :amount
       validates_length_of :comment, :maximum => 255
       validates_length_of :txn, :maximum => 30
@@ -80,22 +83,23 @@ module Qiwi
       # @option params [Float] :amount
       # @option params [String] :comment
       # @option params [String] :txn unique bill identifier
-      # @option params [String] :lifetime in "dd.MM.yyyy HH:mm:ss" format
+      # @option params [String, Time] :lifetime in "dd.MM.yyyy HH:mm:ss" format
       # @option params [Fixnum] :alarm
       # @option params [Boolean] :create
       def initialize(client, params)
         super
         @alarm ||= 0
         @create = true if @create.nil?
+        @lifetime = @lifetime.strftime('%d.%m.%Y %H:%M:%S') if @lifetime.respond_to?(:strftime)
       end
     end
 
     class CancelBill < Base
-      attributes :login, :password, :txn
+      attributes :txn
     end
 
     class CheckBill < Base
-      attributes :login, :password, :txn
+      attributes :txn
 
       # @example
       #   {:user=>"name", :amount=>1000.0, :date=>"07.09.2012 13:33", :status=>60}
@@ -112,7 +116,7 @@ module Qiwi
     end
 
     class GetBillList < Base
-      attributes :login, :password, :dateFrom, :dateTo, :status
+      attributes :dateFrom, :dateTo, :status
 
       validates_presence_of :status
       validates_numericality_of :status
@@ -124,8 +128,8 @@ module Qiwi
       # @option params [Fixnum] :status
       def initialize(client, hash)
         super
-        @dateFrom = hash[:date_from].strftime('%d.%m.%Y %H:%M:%S')
-        @dateTo = hash[:date_to].strftime('%d.%m.%Y %H:%M:%S')
+        @dateFrom = hash[:date_from].strftime('%d.%m.%Y %H:%M:%S') if hash[:date_from]
+        @dateTo = hash[:date_to].strftime('%d.%m.%Y %H:%M:%S') if hash[:date_to]
       end
 
       def result_from_xml(xml)

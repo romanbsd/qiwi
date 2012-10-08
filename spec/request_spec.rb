@@ -14,6 +14,13 @@ describe Qiwi::Request do
       Qiwi::Request::CreateBill.attributes.should eq([:login, :password, :user, :amount, :comment, :txn, :lifetime, :alarm, :create])
     end
 
+    it "allows time as a lifetime" do
+      lifetime = Time.now + 86400
+      r = Qiwi::Request::CreateBill.new(mock.as_null_object, lifetime: lifetime)
+      r.lifetime.should be_a_kind_of(String)
+      r.lifetime.should eq(lifetime.strftime("%d.%m.%Y %H:%M:%S"))
+    end
+
   end
 
   describe 'GetBillList' do
