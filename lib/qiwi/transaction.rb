@@ -69,7 +69,6 @@ module Qiwi
       Qiwi.logger.info "Transaction update: #{transaction.inspect}"
     end
 
-    private
     def remote
       @remote ||= Qiwi::Client.new.check_bill(txn: txn)
     end
