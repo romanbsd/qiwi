@@ -7,19 +7,36 @@ and you're set.
 For example, in Rails that would go into config/initializers/qiwi.rb:
 
 ```ruby
-    Qiwi.configure do |config|
-      config.login = 'mylogin'
-      config.password = 'secret'
-      config.logger = Rails.logger
-      config.transaction_handler = lambda do |txn|
-        # The finder should respond to :find_by_txn, maybe an ActiveRecord model
-        txn.finder = PendingTransaction
-        # Observers that will be notified when the transaction is committed.
-        # See Observable
-        txn.add_observer(PendingTransaction, :commit_transaction)
-        txn.add_observer(TransactionMailer, :transaction)
-      end
+Qiwi.configure do |config|
+  config.login = 'mylogin'
+  config.password = 'secret'
+  config.logger = Rails.logger
+  config.transaction_handler = lambda do |txn|
+    # The finder should respond to :find_by_txn, maybe an ActiveRecord model
+    txn.finder = PendingTransaction
+    # Observers that will be notified when the transaction is committed.
+    # See Observable
+    txn.add_observer(PendingTransaction, :commit_transaction)
+    txn.add_observer(TransactionMailer, :transaction)
+  end
+end
+```
+
+Example commit_transaction implementation:
+
+```ruby
+class PendingTransaction < ActiveRecord::Base
+  def self.commit_transaction(txn)
+    if txn.valid?
+      txn.persisted.update_attribute(:approved, true)
+    else
+      # Notify the user by e-mail
     end
+  # Rescue from exceptions, so other observers will still get an update
+  rescue => e
+    logger.error e.message
+  end
+end
 ```
 
 It exposes the /qiwi endpoint which can be consumed by the Qiwi service.
@@ -27,12 +44,12 @@ It exposes the /qiwi endpoint which can be consumed by the Qiwi service.
 Calling the Qiwi service is as simple as:
 
 ```ruby
-    client = Qiwi::Client.new
-    # See Qiwi::Request::CreateBill#initialize for all the parameters
-    client.create_bill(user: 'user', amount: 1000.0, comment: 'comment', txn: 'txnid')
-    client.check_bill(txn: 'txnid')
-    client.cancel_bill(txn: 'txnid')
-    client.get_bill_list(date_from: Time.now - 1209600, date_to: Time.now, status: 50)
+client = Qiwi::Client.new
+# See Qiwi::Request::CreateBill#initialize for all the parameters
+client.create_bill(user: 'user', amount: 1000.0, comment: 'comment', txn: 'txnid')
+client.check_bill(txn: 'txnid')
+client.cancel_bill(txn: 'txnid')
+client.get_bill_list(date_from: Time.now - 1209600, date_to: Time.now, status: 50)
 ```
 
 ## Contributing to qiwi
