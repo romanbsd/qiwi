@@ -26,6 +26,7 @@ Example commit_transaction implementation:
 
 ```ruby
 class PendingTransaction < ActiveRecord::Base
+  # @param [Qiwi::Transaction] txn
   def self.commit_transaction(txn)
     if txn.valid?
       txn.persisted.update_attribute(:approved, true)
