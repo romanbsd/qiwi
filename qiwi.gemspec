@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Roman Shterenzon"]
-  s.date = "2012-09-08"
+  s.date = "2012-10-31"
   s.description = "Qiwi payments solution"
   s.email = "romanbsd@yahoo.com"
   s.extra_rdoc_files = [
