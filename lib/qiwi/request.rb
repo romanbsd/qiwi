@@ -126,10 +126,10 @@ module Qiwi
       # @option params [Time] :date_from
       # @option params [Time] :date_to
       # @option params [Fixnum] :status
-      def initialize(client, hash)
+      def initialize(client, params)
         super
-        @dateFrom = hash[:date_from].strftime('%d.%m.%Y %H:%M:%S') if hash[:date_from]
-        @dateTo = hash[:date_to].strftime('%d.%m.%Y %H:%M:%S') if hash[:date_to]
+        @dateFrom = params[:date_from].strftime('%d.%m.%Y %H:%M:%S') if params[:date_from]
+        @dateTo = params[:date_to].strftime('%d.%m.%Y %H:%M:%S') if params[:date_to]
       end
 
       def result_from_xml(xml)
