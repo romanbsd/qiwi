@@ -1,4 +1,5 @@
 require 'qiwi/client'
+require 'qiwi/response'
 require 'observer'
 require 'active_model'
 require 'active_support/core_ext/module/delegation'
@@ -30,6 +31,10 @@ module Qiwi
     # which can respond_to?(:amount)
     attr_accessor :finder
 
+    # Create a new instance of Qiwi::Transaction
+    #
+    # @param [String] txn
+    # @param [Fixnum] status
     def initialize(txn, status)
       @txn = txn
       @status = status
@@ -42,6 +47,15 @@ module Qiwi
       else
         Qiwi.config.transaction_handler.call(self) if Qiwi.config.transaction_handler
       end
+    end
+
+    # Symbol that represents the transaction status. See Response::STATUS.
+    #
+    # @return [Symbol] status
+    # @example
+    #   :paid
+    def to_sym
+      Response::STATUS[status]
     end
 
     def inspect

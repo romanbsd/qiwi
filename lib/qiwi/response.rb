@@ -1,7 +1,7 @@
 module Qiwi
   module Response
     STATUS = {
-      50 => :set,
+      50 => :issued,
       52 => :being_processed,
       60 => :paid,
       150 => :cancelled_by_terminal,

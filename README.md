@@ -29,9 +29,13 @@ class PendingTransaction < ActiveRecord::Base
   # @param [Qiwi::Transaction] txn
   def self.commit_transaction(txn)
     if txn.valid?
-      txn.persisted.update_attribute(:approved, true)
+      if txn.to_sym == :paid
+        txn.persisted.update_attribute(:approved, true)
+      else
+        # Notify user by e-mail
+      end
     else
-      # Notify the user by e-mail
+      # Log error, notify user by e-mail
     end
   # Rescue from exceptions, so other observers will still get an update
   rescue => e
