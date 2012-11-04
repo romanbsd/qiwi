@@ -8,29 +8,31 @@ module Qiwi
     include Observable
     include ActiveModel::Validations
 
-    class CorrectAmountValidator < ActiveModel::Validator
-      def validate(txn)
-        unless txn.remote_amount.to_i == txn.amount.to_i
-          txn.errors.add(:amount, :invalid)
+    class RemoteValidator < ActiveModel::EachValidator
+      def validate_each(txn, attribute, value)
+        unless txn.remote.send(attribute) == value
+          txn.errors.add(attribute, :invalid)
         end
       end
     end
 
     validates_presence_of :txn
     validates_presence_of :persisted, :remote, :message => 'transaction not found'
-    validates :amount, :numericality => true, :correct_amount => true
+    validates :amount, :numericality => true, :remote => true
+    validates :status, :remote => true
 
     delegate :amount, :status, :to => :remote, :prefix => true, :allow_nil => true
 
     # Transaction id
-    attr_reader :txn
+    attr_reader :txn, :status
 
     # Finder should respond_to?(:find_by_txn) and return an object,
     # which can respond_to?(:amount)
     attr_accessor :finder
 
-    def initialize(txn)
+    def initialize(txn, status)
       @txn = txn
+      @status = status
 
       # A logging observer
       add_observer(self, :log_transaction)

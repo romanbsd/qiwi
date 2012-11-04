@@ -15,11 +15,6 @@ describe Qiwi::Handler do
     handler.handle.should eq(0)
   end
 
-  it "checks for matching status" do
-    txn.stub(:remote_status) { 50 }
-    handler.handle.should eq(300)
-  end
-
   it "checks for existence of transaction" do
     txn.stub(:exists?) { false }
     handler.handle.should eq(210)

@@ -6,10 +6,9 @@ module Qiwi
       new(txn, status).handle
     end
 
-    attr_reader :txn, :status
+    attr_reader :txn
     def initialize(txn, status)
-      @txn = Transaction.new(txn)
-      @status = status
+      @txn = Transaction.new(txn, status)
     end
 
     def handle
@@ -22,11 +21,6 @@ module Qiwi
         return 210
       end
 
-      if status != txn.remote_status
-        logger.error "Stati don't match: #{txn.remote_status} vs. #{status}"
-        return 300
-      end
-
       unless txn.valid_amount?
         logger.error "Incorrect amount: #{txn.amount}"
         return 241
@@ -35,7 +29,7 @@ module Qiwi
       if txn.valid?
         return  0
       else
-        logger.error "Unknown error: #{txn.inspect}"
+        logger.error "Invalid transaction: #{txn.errors.full_messages.join(', ')}"
         return 300
       end
 
