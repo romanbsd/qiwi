@@ -23,7 +23,7 @@ module Qiwi
       end
 
       if status != txn.remote_status
-        logger.error "Stati don't match: #{txn.status} vs. #{status}"
+        logger.error "Stati don't match: #{txn.remote_status} vs. #{status}"
         return 300
       end
 
@@ -39,6 +39,9 @@ module Qiwi
         return 300
       end
 
+    rescue => e
+      logger.fatal "Error: #{e.message}"
+      return 300
     ensure
       txn.commit!
     end
