@@ -28,7 +28,8 @@ module Qiwi
       # @param [Hash] params
       def initialize(client, params)
         self.class.attributes.each { |attr| send(:"#{attr}=", params[attr]) }
-        @login, @password = client.login, client.password
+        @login ||= client.login
+        @password ||= client.password
       end
 
       def body
@@ -77,6 +78,7 @@ module Qiwi
       validates_length_of :comment, :maximum => 255
       validates_length_of :txn, :maximum => 30
       validates_format_of :lifetime, :with => /^\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}:\d{2}$/, :allow_nil => true
+      validates_inclusion_of :create, :in => [true, false]
 
       # @param [Hash] params
       # @option params [String] :user e.g. a phone number

@@ -21,6 +21,23 @@ describe Qiwi::Request do
       r.lifetime.should eq(lifetime.strftime("%d.%m.%Y %H:%M:%S"))
     end
 
+    it "only allows boolean as 'create'" do
+      r = Qiwi::Request::CreateBill.new(mock.as_null_object, create: 1)
+      r.should_not be_valid
+      r.errors[:create].should have(1).error
+    end
+
+    it "validates all parameters" do
+      r = Qiwi::Request::CreateBill.new(mock.as_null_object, {
+        login: 'login',
+        password: 'password',
+        user: 'user',
+        amount: 900,
+        txn: 'txnid',
+        create: false
+      })
+      r.should be_valid
+    end
   end
 
   describe 'GetBillList' do
