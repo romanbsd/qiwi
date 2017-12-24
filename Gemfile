@@ -10,10 +10,10 @@ gem 'rack'
 # Include everything needed to run rake, tests, features, etc.
 group :development do
   gem 'webmock'
-  gem "rspec", "~> 2.11.0"
-  gem "yard", "~> 0.7"
-  gem "bundler", "~> 1.0"
-  gem "jeweler", "~> 1.8.4"
+  gem 'rspec', '~> 3.7.0'
+  gem 'yard'
+  gem 'bundler', '~> 1.0'
+  gem 'jeweler'
   gem 'guard-rspec'
   gem 'rb-fsevent', '~> 0.9.1'
   gem 'growl'

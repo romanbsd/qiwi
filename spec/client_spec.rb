@@ -11,8 +11,8 @@ describe Qiwi::Client do
 
     it "sends login and password" do
       blk = lambda do |req|
-        req.body.should match(%r{<login>\w+</login>})
-        req.body.should match(%r{<password>\w+</password>})
+        expect(req.body).to match(%r{<login>\w+</login>})
+        expect(req.body).to match(%r{<password>\w+</password>})
       end
       stub_request(:post, "http://localhost:8088/mock").with(&blk).
         to_return(:status => 200, :body => '')
@@ -34,7 +34,7 @@ describe Qiwi::Client do
         to_return(:status => 200, :body => body)
 
       result = create_bill.call
-      result.should eq(0)
+      expect(result).to eq(0)
     end
 
     it "performs cancel bill" do
@@ -51,7 +51,7 @@ describe Qiwi::Client do
         to_return(:status => 200, :body => body)
 
       result = client.cancel_bill(user: 'user', amount: 1000, comment: 'comment', txn: 'txn')
-      result.should eq(300)
+      expect(result).to eq(300)
     end
   end
 
@@ -97,9 +97,9 @@ describe Qiwi::Client do
         config.password = 'mypassword'
       end
       client = Qiwi::Client.new
-      client.login.should eq('mylogin')
-      client.password.should eq('mypassword')
-      client.endpoint.should eq(Qiwi::Client::ENDPOINT)
+      expect(client.login).to eq('mylogin')
+      expect(client.password).to eq('mypassword')
+      expect(client.endpoint).to eq(Qiwi::Client::ENDPOINT)
     end
 
   end

@@ -11,29 +11,29 @@ describe Qiwi::Transaction do
   end
 
   before do
-    Qiwi::Client.any_instance.stub(:check_bill).and_return OpenStruct.new({
+    allow_any_instance_of(Qiwi::Client).to receive(:check_bill).and_return OpenStruct.new({
       :user=>"name", :amount=>1000.0, :date=>"07.09.2012 13:33", :status=>60
     })
   end
 
   describe "Validations" do
     it "checks amount" do
-      persisted = mock(:txn, :amount => 2000.0)
-      finder = mock(:finder, :find_by_txn => persisted)
+      persisted = double(:txn, :amount => 2000.0)
+      finder = double(:finder, :find_by_txn => persisted)
       txn = Qiwi::Transaction.new('txid', 60) { |tx| tx.finder = finder }
-      txn.should_not be_valid_amount
+      expect(txn).not_to be_valid_amount
     end
 
     it "has error on status when it differs" do
       txn = Qiwi::Transaction.new('txid', 160) { |tx| tx.finder = nil }
-      txn.should_not be_valid
-      txn.errors[:status].should have(1).error
+      expect(txn).not_to be_valid
+      expect(txn.errors[:status].size).to eq(1)
     end
 
     it "checks remote status" do
       txn = Qiwi::Transaction.new('txid', 60) { |tx| tx.finder = nil }
       txn.valid?
-      txn.errors[:status].should be_empty
+      expect(txn.errors[:status]).to be_empty
     end
 
   end
@@ -47,7 +47,7 @@ describe Qiwi::Transaction do
     it "notifies observers" do
       observer = MockObserver.new
       txn = Qiwi::Transaction.new('txid', 60) { |tx| tx.add_observer(observer) }
-      observer.should_receive(:update).with(txn)
+      expect(observer).to receive(:update).with(txn)
       txn.commit!
     end
   end

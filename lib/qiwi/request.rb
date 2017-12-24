@@ -77,7 +77,7 @@ module Qiwi
       validates_numericality_of :amount
       validates_length_of :comment, :maximum => 255
       validates_length_of :txn, :maximum => 30
-      validates_format_of :lifetime, :with => /^\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}:\d{2}$/, :allow_nil => true
+      validates_format_of :lifetime, :with => /\A\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}:\d{2}\z/, :allow_nil => true
       validates_inclusion_of :create, :in => [true, false]
 
       # @param [Hash] params
